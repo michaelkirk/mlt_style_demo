@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>MLT Encoding Test</title>
+  <title>Tile and Error</title>
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css" />
   <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
   <style>
@@ -75,10 +75,11 @@
   </style>
 </head>
 <body>
-  <p style="max-width: 720px; line-height: 1.6; font-size: 14px; color: #ccc; margin-bottom: 32px;">
+  <h1 style="max-width: 800px; margin: 0 auto 12px; font-size: 28px;">Tile and Error</h1>
+  <p style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6; font-size: 14px; color: #ccc;">
     These test cases isolate where <code style="background:#333;padding:1px 4px;border-radius:3px;">encoding: mlt</code>
     needs to appear for MapLibre to correctly decode MLT tiles.
-    Per the <a href="https://maplibre.org/maplibre-style-spec/sources/#vector-encoding" target="_blank" style="color:#7bf">MapLibre Style Spec</a>,
+    Per the <a href="https://maplibre.org/maplibre-style-spec/sources/#encoding" target="_blank" style="color:#7bf">MapLibre Style Spec</a>,
     it belongs in the style's source definition. TileJSON has no such field.
     The four cases below test every combination of the field being present or absent
     in each location. The iOS results suggest MapLibre Native is reading
@@ -114,7 +115,7 @@ tileDidTriggerAction: 0/0/0 .error, source: maplibre`;
       block.className = "map-block";
 
       block.innerHTML = `
-        <h2>${label}</h2>
+        <h2>Case #${i + 1}: ${label}</h2>
         <a class="style-url" href="https://michaelkirk.github.io/mlt_style_demo/${url}" target="_blank">https://michaelkirk.github.io/mlt_style_demo/${url}</a>
         <div class="columns">
           <div>
