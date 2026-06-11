@@ -1,7 +1,7 @@
 {
     "sources": {
         "maplibre": {
-            "url": "http://localhost:8000/sources/mlt_encoding.json",
+            "url": "https://michaelkirk.github.io/mlt_style_demo/sources/mlt_encoding.json",
             "type": "vector"
         }
     },
