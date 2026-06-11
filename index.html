@@ -125,10 +125,10 @@ tileDidTriggerAction: 0/0/0 .error, source: maplibre`;
     ];
 
     function statusLabel(works, expected) {
-      const icon = works ? "✅" : "❌";
+      const icon = works === expected ? "✅" : "❌";
       const result = works ? "Working" : "Not working";
       const note = works === expected ? "expected" : "unexpected";
-      return `${icon} ${result} <span style="opacity:0.6">(${note})</span>`;
+      return `${result} ${icon} <span style="opacity:0.6">(${note})</span>`;
     }
 
     styles.forEach(({ label, url, sourceUrl, webWorks, webExpected, iosErrors, iosExpected }, i) => {
