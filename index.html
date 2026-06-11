@@ -11,6 +11,8 @@
 
     .map-block { margin-bottom: 48px; }
 
+    .case-header { width: 100%; margin-bottom: 12px; }
+
     .map-block h2 {
       font-size: 14px;
       font-weight: 600;
@@ -19,15 +21,17 @@
     }
 
     .style-url {
-      display: inline-block;
       font-family: monospace;
       font-size: 12px;
       color: #aaa;
-      margin-bottom: 12px;
       user-select: all;
       text-decoration: none;
     }
     .style-url:hover { color: #eee; text-decoration: underline; }
+
+    .url-table { border-collapse: collapse; margin-bottom: 0; }
+    .url-table td { padding: 0 8px 2px 0; font-family: monospace; font-size: 12px; vertical-align: baseline; }
+    .url-table .url-label { color: #666; white-space: nowrap; }
 
     .columns {
       display: grid;
@@ -76,7 +80,7 @@
 </head>
 <body>
   <h1 style="max-width: 800px; margin: 0 auto 12px; font-size: 28px;">Tile and Error</h1>
-  <p style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6; font-size: 14px; color: #ccc;">
+  <p style="max-width: 800px; margin: 0 auto 48px; line-height: 1.6; font-size: 14px; color: #ccc;">
     These test cases isolate where <code style="background:#333;padding:1px 4px;border-radius:3px;">encoding: mlt</code>
     needs to appear for MapLibre to correctly decode MLT tiles.
     Per the <a href="https://maplibre.org/maplibre-style-spec/sources/#encoding" target="_blank" style="color:#7bf">MapLibre Style Spec</a>,
@@ -87,6 +91,7 @@
     from TileJSON rather than the style — the <em>no tile encoding</em> cases
     produce tile errors on iOS regardless of whether the style carries the field.
     The JS library seems to read it from either.
+    The iOS screenshots were taken from a simulator running MapLibre Native, pointed at the corresponding style URL for each case.
   </p>
 
   <script>
@@ -102,15 +107,19 @@ tileDidTriggerAction: 0/0/0 .error, source: maplibre`;
 
     const styles = [
       { label: "no_style_encoding · no_tile_encoding", url: "styles/no_style_encoding_no_tile_encoding.json",
+        sourceUrl: "sources/no_encoding.json",
         webWorks: false, webExpected: false,
         iosErrors: tileErrors,  iosExpected: false },
       { label: "no_style_encoding · mlt_tile_encoding", url: "styles/no_style_encoding_mlt_tile_encoding.json",
+        sourceUrl: "sources/mlt_encoding.json",
         webWorks: true,  webExpected: false,
         iosExpected: false },
       { label: "mlt_style_encoding · no_tile_encoding",  url: "styles/mlt_style_encoding_no_tile_encoding.json",
+        sourceUrl: "sources/no_encoding.json",
         webWorks: true,  webExpected: true,
         iosErrors: tileErrors,  iosExpected: true },
       { label: "mlt_style_encoding · mlt_tile_encoding", url: "styles/mlt_style_encoding_mlt_tile_encoding.json",
+        sourceUrl: "sources/mlt_encoding.json",
         webWorks: true,  webExpected: true,
         iosExpected: true },
     ];
@@ -122,7 +131,7 @@ tileDidTriggerAction: 0/0/0 .error, source: maplibre`;
       return `${icon} ${result} <span style="opacity:0.6">(${note})</span>`;
     }
 
-    styles.forEach(({ label, url, webWorks, webExpected, iosErrors, iosExpected }, i) => {
+    styles.forEach(({ label, url, sourceUrl, webWorks, webExpected, iosErrors, iosExpected }, i) => {
       const iosWorks = !iosErrors;
       const slug = url.replace("styles/", "").replace(".json", "");
       const screenshotUrl = `images/ios-${slug}.png`;
@@ -131,8 +140,13 @@ tileDidTriggerAction: 0/0/0 .error, source: maplibre`;
       block.className = "map-block";
 
       block.innerHTML = `
-        <h2>Case #${i + 1}: ${label}</h2>
-        <a class="style-url" href="https://michaelkirk.github.io/mlt_style_demo/${url}" target="_blank">https://michaelkirk.github.io/mlt_style_demo/${url}</a>
+        <div class="case-header">
+          <h2>Case #${i + 1}: ${label}</h2>
+          <table class="url-table"><tbody>
+            <tr><td class="url-label">style.json</td><td><a class="style-url" href="https://michaelkirk.github.io/mlt_style_demo/${url}" target="_blank">https://michaelkirk.github.io/mlt_style_demo/${url}</a></td></tr>
+            <tr><td class="url-label">tile.json</td><td><a class="style-url" href="https://michaelkirk.github.io/mlt_style_demo/${sourceUrl}" target="_blank">https://michaelkirk.github.io/mlt_style_demo/${sourceUrl}</a></td></tr>
+          </tbody></table>
+        </div>
         <div class="columns">
           <div>
             <div class="col-label">Web &mdash; ${statusLabel(webWorks, webExpected)}</div>
