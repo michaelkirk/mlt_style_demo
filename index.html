@@ -101,13 +101,29 @@ tileDidTriggerAction: 5/5/11 .error, source: maplibre
 tileDidTriggerAction: 0/0/0 .error, source: maplibre`;
 
     const styles = [
-      { label: "no_style_encoding · no_tile_encoding", url: "styles/no_style_encoding_no_tile_encoding.json", iosErrors: tileErrors },
-      { label: "no_style_encoding · mlt_tile_encoding", url: "styles/no_style_encoding_mlt_tile_encoding.json" },
-      { label: "mlt_style_encoding · no_tile_encoding",  url: "styles/mlt_style_encoding_no_tile_encoding.json", iosErrors: tileErrors },
-      { label: "mlt_style_encoding · mlt_tile_encoding", url: "styles/mlt_style_encoding_mlt_tile_encoding.json" },
+      { label: "no_style_encoding · no_tile_encoding", url: "styles/no_style_encoding_no_tile_encoding.json",
+        webWorks: false, webExpected: false,
+        iosErrors: tileErrors,  iosExpected: false },
+      { label: "no_style_encoding · mlt_tile_encoding", url: "styles/no_style_encoding_mlt_tile_encoding.json",
+        webWorks: true,  webExpected: false,
+        iosExpected: false },
+      { label: "mlt_style_encoding · no_tile_encoding",  url: "styles/mlt_style_encoding_no_tile_encoding.json",
+        webWorks: true,  webExpected: true,
+        iosErrors: tileErrors,  iosExpected: true },
+      { label: "mlt_style_encoding · mlt_tile_encoding", url: "styles/mlt_style_encoding_mlt_tile_encoding.json",
+        webWorks: true,  webExpected: true,
+        iosExpected: true },
     ];
 
-    styles.forEach(({ label, url, iosErrors }, i) => {
+    function statusLabel(works, expected) {
+      const icon = works ? "✅" : "❌";
+      const result = works ? "Working" : "Not working";
+      const note = works === expected ? "expected" : "unexpected";
+      return `${icon} ${result} <span style="opacity:0.6">(${note})</span>`;
+    }
+
+    styles.forEach(({ label, url, webWorks, webExpected, iosErrors, iosExpected }, i) => {
+      const iosWorks = !iosErrors;
       const slug = url.replace("styles/", "").replace(".json", "");
       const screenshotUrl = `images/ios-${slug}.png`;
 
@@ -119,11 +135,11 @@ tileDidTriggerAction: 0/0/0 .error, source: maplibre`;
         <a class="style-url" href="https://michaelkirk.github.io/mlt_style_demo/${url}" target="_blank">https://michaelkirk.github.io/mlt_style_demo/${url}</a>
         <div class="columns">
           <div>
-            <div class="col-label">Web</div>
+            <div class="col-label">Web &mdash; ${statusLabel(webWorks, webExpected)}</div>
             <div class="map-container" id="map-${i}"></div>
           </div>
           <div>
-            <div class="col-label">Native (iOS)</div>
+            <div class="col-label">Native (iOS) &mdash; ${statusLabel(iosWorks, iosExpected)}</div>
             <img class="ios-screenshot" src="${screenshotUrl}" alt="iOS screenshot for ${label}" />
             ${iosErrors ? `<pre class="ios-errors">${iosErrors}</pre>` : ""}
           </div>
